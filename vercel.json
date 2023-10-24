@@ -1,0 +1,30 @@
+{
+    "version": 2,
+    "env": {
+        "MONGO_URI": "mongodb+srv://damanhtuan24022000:damanhtuan24022000@cluster1.zxnza45.mongodb.net/youtube_video_sharing_app_database?retryWrites=true&w=majority",
+        "API_KEY_YOUTUBE": "AIzaSyBk35uawxQWeaGpYdPfTAm2YAuycZrG0Iw"
+    },
+    "builds": [
+        {
+            "src": "src/main.ts",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "src/main.ts",
+            "methods": [
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH",
+                "OPTIONS"
+            ],
+            "headers": {
+                "Access-Control-Allow-Origin": "*"
+            }
+        }
+    ]
+}
