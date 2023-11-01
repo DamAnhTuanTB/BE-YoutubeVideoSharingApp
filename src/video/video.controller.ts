@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Query,
   UseGuards,
@@ -30,6 +31,11 @@ export class VideoController {
   @HttpCode(HttpStatus.OK)
   getInfoVideo(@Query() query: GetInfoVideoDto) {
     return this.videoService.getInfoVideo(query);
+  }
+  @Get('/detail/:id')
+  @HttpCode(HttpStatus.OK)
+  getDetailVideo(@Param('id') id: string) {
+    return this.videoService.getDetailVideo(id);
   }
 
   @Get('')

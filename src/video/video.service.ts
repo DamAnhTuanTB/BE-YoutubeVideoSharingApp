@@ -8,6 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import axios, { AxiosResponse } from 'axios';
 import { Model } from 'mongoose';
+import { CommentService } from '../comment/comment.service';
 import {
   checkYoutubeURL,
   formatedResponse,
@@ -15,6 +16,7 @@ import {
   getYoutubeVideoId,
 } from '../utils';
 import {
+  ErrorGetDetailVideo,
   ErrorVideo,
   IncorrectLinkOfVideo,
   SuccessShareVideo,
@@ -31,6 +33,7 @@ export class VideoService {
   constructor(
     @InjectModel('Video')
     private readonly VideoModel: Model<VideoDocument>,
+    private readonly commentService: CommentService,
     private readonly configService: ConfigService,
   ) {}
 
@@ -90,6 +93,22 @@ export class VideoService {
       };
     } else {
       throw new BadRequestException(IncorrectLinkOfVideo);
+    }
+  }
+
+  async getDetailVideo(videoId: string) {
+    try {
+      const listComment = await this.commentService.getListComment(videoId);
+      const video = await this.VideoModel.findOne({ _id: videoId }).lean();
+      return {
+        ...formatedResponse(video),
+        listComment: listComment.data,
+      };
+    } catch (error) {
+      throw new HttpException(
+        ErrorGetDetailVideo,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 }

@@ -6,3 +6,8 @@ export const ErrorVideo = 'An error has occurred. Please try again later.';
 export const SuccessShareVideo = 'Successfully shared the video.';
 export const IncorrectLinkOfVideo =
   'The URL of the video you provided is not correct. Please check again.';
+export const SuccessCommentVideo = 'Successfully comment video.';
+export const ErrorCommentVideo =
+  'An error has occured. Please try again later.';
+export const ErrorGetDetailVideo =
+  'An error has occured. Please try again later.';

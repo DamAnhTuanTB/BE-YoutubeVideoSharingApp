@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigModule } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
+import { CommentService } from '../../comment/comment.service';
 import { formatedResponse } from '../../utils';
 import { SuccessShareVideo } from '../../utils/message';
 import { ShareVideoDto } from '../dto/index.dto';
@@ -16,6 +17,14 @@ const mockVideo = {
   createdAt: '20-10-2023',
 };
 
+const mockComment = {
+  _id: '61c0ccf11d7bf83d153d7c06',
+  email: 'client@gmail.com',
+  comment: 'Very good',
+  videoId: '123456',
+  createdAt: '20-10-2023',
+};
+
 const mockVideoService = {
   getListVideo: jest.fn().mockResolvedValueOnce({
     data: [formatedResponse(mockVideo)],
@@ -26,9 +35,17 @@ const mockVideoService = {
   shareVideo: jest.fn(),
 };
 
+const mockCommentService = {
+  getListComment: jest.fn().mockResolvedValueOnce({
+    data: [formatedResponse(mockComment)],
+  }),
+  commentVideo: jest.fn(),
+};
+
 describe('Video Controller', () => {
   let videoService: VideoService;
   let videoController: VideoController;
+  let commentService: CommentService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -42,11 +59,16 @@ describe('Video Controller', () => {
           provide: VideoService,
           useValue: mockVideoService,
         },
+        {
+          provide: CommentService,
+          useValue: mockCommentService,
+        },
       ],
     }).compile();
 
     videoService = module.get<VideoService>(VideoService);
     videoController = module.get<VideoController>(VideoController);
+    commentService = module.get<CommentService>(CommentService)
   });
 
   it('should be defined video controller', () => {

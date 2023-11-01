@@ -2,6 +2,8 @@ import { ConfigModule } from '@nestjs/config';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
+import { CommentService } from '../../comment/comment.service';
+import { Comment } from '../../comment/model/comment.model';
 import { formatedResponse } from '../../utils';
 import { SuccessShareVideo } from '../../utils/message';
 import { ShareVideoDto } from '../dto/index.dto';
@@ -10,6 +12,7 @@ import { VideoService } from '../video.service';
 
 describe('Video Service', () => {
   let videoService: VideoService;
+  let commentService: CommentService;
   let model: Model<Video>;
 
   const mockVideo = {
@@ -26,6 +29,21 @@ describe('Video Service', () => {
     countDocuments: jest.fn(),
   };
 
+  const mockComment = {
+    _id: '61c0ccf11d7bf83d153d7c06',
+    email: 'client@gmail.com',
+    comment: 'Very good',
+    videoId: '123456',
+    createdAt: '20-10-2023',
+  };
+
+  const mockCommentService = {
+    getListComment: jest.fn().mockResolvedValueOnce({
+      data: [formatedResponse(mockComment)],
+    }),
+    commentVideo: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule],
@@ -35,10 +53,16 @@ describe('Video Service', () => {
           provide: getModelToken(Video.name),
           useValue: mockVideoService,
         },
+        CommentService,
+        {
+          provide: getModelToken(Comment.name),
+          useValue: mockCommentService,
+        },
       ],
     }).compile();
 
     videoService = module.get<VideoService>(VideoService);
+    commentService = module.get<CommentService>(CommentService);
     model = module.get<Model<Video>>(getModelToken(Video.name));
   });
 
